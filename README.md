@@ -1,8 +1,8 @@
-#API DE BIBLIOTECA#
+# API DE BIBLIOTECA #
 
 **DESCRIPCION**
 
-API RESTful para la gestión de usuarios, libros y préstamos en una biblioteca digital. Incluye autenticación con JWT, control de roles (admin y lector), y relaciones entre entidades (Usuario, Libro, Prestamo). Desarrollado con Node.js, Express y MongoDB.
+API REST AUTH para la gestión de usuarios, libros y préstamos en una biblioteca digital. Incluye autenticación con JWT, control de roles (admin y lector), y relaciones entre entidades (Usuario, Libro, Prestamo). Desarrollado con Node.js, Express y MongoDB.
 
 **Tecnologías utilizadas**
 Node.js 
@@ -46,7 +46,7 @@ La semilla utiliza el modelo Libro y la colección configurada como ‘libro’.
 
 El lector deberá estar registrado y logueado paraobtener los libros disponibles o buscar uno en específico
 
-** POST ** Crear libro (http://localhost:3000/api/v1/libro):
+**POST** Crear libro (http://localhost:3000/api/v1/libro):
 ```sh
 {
   "titulo": "Clean Code",
@@ -56,7 +56,7 @@ El lector deberá estar registrado y logueado paraobtener los libros disponibles
   }
 ```
 
-**ENDPOINTS-PRESTAMO **
+**ENDPOINTS-PRESTAMO**
 
 |Método |Endpoint |Middleware |Descripción|
 | ------ | ------ |----------|------------|
@@ -66,7 +66,7 @@ El lector deberá estar registrado y logueado paraobtener los libros disponibles
 |PUT |/prestamo/:id |isAdmin|Actualizar estado del préstamo|
 |DELETE |/prestamo/:id |isAdmin |Eliminar préstamo|
 
-Unicamente el Administrador gestionara los prestamos de libros
+Unicamente el Administrador gestionar los prestamos de libros.
 
 **POST** Crear préstamo(http://localhost:3000/api/v1/prestamo):
 ```sh
@@ -76,6 +76,7 @@ Unicamente el Administrador gestionara los prestamos de libros
   "fechaFin": "2025-12-02"
 }
 ```
+
 **UPDATE** Actualizar estado(http://localhost:3000/api/v1/prestamo/:id):
 
 ```sh
@@ -83,6 +84,7 @@ Unicamente el Administrador gestionara los prestamos de libros
   "estado": "devuelto"
 }
 ```
+
 **ENDPOINTS- USER**
 
 |Método |Endpoint |Middleware |Descripción|
@@ -122,3 +124,5 @@ Todas las respuestas siguen un formato estructurado para mejor visibilidad en ca
   "data": {...}, // respuesta ok
   "error": {...} // segun el error, tiene detalle de tipo, mensaje , ruta y fecha que permite ver mejor en caso de bug. 
 }
+
+Los middlewares (isAuth, isAdmin) controlan acceso según rol o autenticación.

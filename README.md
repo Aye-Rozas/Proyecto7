@@ -30,7 +30,7 @@ La semilla utiliza el modelo Libro y la colección configurada como ‘libro’.
 4) para agregar prestamo o modificar al administrador, se hace con Update y autorizacion del Admin, mediante token (cargar datos manualmente en Insomnia)EJ:
 ```sh
 {
-	"prestamos":["691e081faf38b2266a18f918"]
+	"agregarPrestamos":["691e081faf38b2266a18f918"]
 }
 ```
  **ENDPOINTS- LIBRO**
@@ -41,10 +41,10 @@ La semilla utiliza el modelo Libro y la colección configurada como ‘libro’.
 |GET |/libro |isAuth |Obtener todos los libros|
 |GET |/libro/:id |isAuth |Obtener un libro por ID|
 |POST |/libro |isAdmin |Crear nuevo libro|
-|PUT |/libro/:id |isAdmin|Actualizar libro|
+|PUT |/libro/:id |isAdmin|Actualizar libro (campos simples y arrays con $set, $addToSet, $pull)|
 |DELETE |/libro/:id |isAdmin|Eliminar libro|
 
-El lector deberá estar registrado y logueado paraobtener los libros disponibles o buscar uno en específico
+El lector deberá estar registrado y logueado para obtener los libros disponibles o buscar uno en específico
 
 **POST** Crear libro (http://localhost:3000/api/v1/libro):
 ```sh
@@ -89,12 +89,11 @@ Unicamente el Administrador gestionar los prestamos de libros.
 
 |Método |Endpoint |Middleware |Descripción|
 | ------ | ------ |----------|------------|
-|POST |/users/register |No necesario|Registra un nuevo usuario. Valida duplicados por email. Rol por defecto: lector|
-|POST |/users/login |No necesario |Autentica usuario por email y contraseña. Devuelve token JWT si es correcto|
-|GET |/users/ |isAdmin |Obtiene todos los usuarios. Solo accesible para administradores|
-|PUT |/users/:id/rol |isAdmin |Actualiza el rol de un usuario por ID. Solo accesible para administradores|
-|DELETE |/users/delete |isAuth |Elimina la propia cuenta del usuario autenticado (requiere email y contraseña)|
-|DELETE |/users/:id |isAdmin |Elimina un usuario por ID. Solo accesible para administradores|
+|POST |/user/register |No necesario|Registra un nuevo usuario. Valida duplicados por email. Rol por defecto: lector|
+|POST |/user/login |No necesario |Autentica usuario por email y contraseña. Devuelve token JWT si es correcto|
+|GET |/user/ |isAdmin |Obtiene todos los usuarios. Solo accesible para administradores|
+|PUT |/user/:id/rol |isAuth/isAdmin |Actualizar usuario: self-update (nombre, email, contraseña), rol solo admin|
+|DELETE |/user/:id |isAdmin/isAuth |Elimina un usuario por ID, la propia cuenta del usuario autenticado (requiere email y contraseña)o Admin elimina a otros.|
 
 **REGISTER** (http://localhost:3000/api/v1/user/register):
 
@@ -122,7 +121,8 @@ Todas las respuestas siguen un formato estructurado para mejor visibilidad en ca
   "success": true/false,
   "statusCode": 200/201/400/404,
   "data": {...}, // respuesta ok
-  "error": {...} // segun el error, tiene detalle de tipo, mensaje , ruta y fecha que permite ver mejor en caso de bug. 
+  "error": {...} // segun el error, tiene detalle de tipo, mensaje , ruta y fecha que permite ver mejor en caso de bug.(Catch seguro: nunca expone stack ni objeto completo, solo tipo y mensaje controlado.)
 }
 
 Los middlewares (isAuth, isAdmin) controlan acceso según rol o autenticación.
+Arrays actualizados con operadores MongoDB ($set, $addToSet, $pull).

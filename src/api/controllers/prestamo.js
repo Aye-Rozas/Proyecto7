@@ -1,7 +1,5 @@
-const mongoose = require('mongoose');
-const Libro = require('../models/libro');
 const Prestamo = require('../models/prestamo');
-const User = require('../models/user');
+
 
 //? Create
 const postPrestamo = async (req, res, next) => {
@@ -11,26 +9,24 @@ const postPrestamo = async (req, res, next) => {
     return res.status(201).json({
       success: true,
       statusCode: 201,
-      data: prestamoSaved
+      data: prestamoSaved,
     });
   } catch (error) {
-    return res
-      .status(400)
-      .json({
+    return res.status(400).json({
       success: false,
       statusCode: 400,
       error: {
-        type: error.name || "ServerError",
-        message: `Error en la solicitud del préstamo: ${error.message}`,
+        type: error.name || 'ServerError',
+        message: "Error en la solicitud del préstamo",
         path: req.originalUrl,
         method: req.method,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   }
 };
 
-//? get prestamos 
+//? get prestamos
 
 const getPrestamo = async (req, res, next) => {
   try {
@@ -40,21 +36,19 @@ const getPrestamo = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       statusCode: 200,
-      data: prestamo
+      data: prestamo,
     });
   } catch (error) {
-    return res
-      .status(404)
-      .json({
+    return res.status(404).json({
       success: false,
       statusCode: 404,
       error: {
-        type: error.name || "ServerError",
-        message: `Error al obtener datos del préstamo: ${error.message}`,
+        type: error.name || 'ServerError',
+        message: "Error al obtener datos del préstamo",
         path: req.originalUrl,
         method: req.method,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   }
 };
@@ -68,21 +62,19 @@ const getPrestamoById = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       statusCode: 200,
-      data: prestamo
+      data: prestamo,
     });
   } catch (error) {
-    return res
-      .status(404)
-      .json({
+    return res.status(404).json({
       success: false,
       statusCode: 404,
       error: {
-        type: error.name || "ServerError",
-        message: `Error al obtener datos del préstamo: ${error.message}`,
+        type: error.name || 'ServerError',
+        message:"Error al obtener datos del préstamo",
         path: req.originalUrl,
         method: req.method,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   }
 };
@@ -92,29 +84,48 @@ const getPrestamoById = async (req, res, next) => {
 const updatePrestamo = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updated = await Prestamo.findByIdAndUpdate(id, req.body, {
-      new: true,
-    })
+    const oldPrestamo = await Prestamo.findById(id);
+
+    if (!oldPrestamo) {
+      return res.status(404).json({
+        success: false,
+        statusCode: 404,
+        error: { type: 'NotFound', message:" Préstamo no encontrado "},
+      });
+    }
+
+    const operacionesMongo = {};
+    if (Object.keys(req.body).length > 0) {
+      operacionesMongo.$set = req.body;
+    }
+
+    const updatedPrestamo = await Prestamo.findByIdAndUpdate(
+      id,
+      operacionesMongo,
+      {
+        new: true,
+        runValidators: true,
+      },
+    )
       .populate({ path: 'libro', select: 'titulo autor genero' })
       .populate({ path: 'lector', select: 'nombre email' });
+
     return res.status(200).json({
       success: true,
       statusCode: 200,
-      data: updated
+      data: updatedPrestamo,
     });
   } catch (error) {
-    return res
-      .status(400)
-      .json({
+    return res.status(400).json({
       success: false,
       statusCode: 400,
       error: {
-        type: error.name || "ServerError",
-        message: `Error al actualizar datos del préstamo: ${error.message}`,
+        type: error.name || 'ServerError',
+        message: "Error al actualizar datos del préstamo",
         path: req.originalUrl,
         method: req.method,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   }
 };
@@ -126,19 +137,18 @@ const deletePrestamo = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       statusCode: 200,
-      data: deleted
+      data: deleted,
     });
   } catch (error) {
     return res.status(400).json({
       success: false,
       statusCode: 404,
       error: {
-        type: error.name || "ServerError",
-        message: `Error al eliminar préstamo: ${error.message}`,
-        path: req.originalUrl,
+        type: error.name || 'ServerError',
+        message:" Error al eliminar préstamo",
         method: req.method,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   }
 };

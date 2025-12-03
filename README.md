@@ -124,5 +124,6 @@ Todas las respuestas siguen un formato estructurado para mejor visibilidad en ca
   "error": {...} // segun el error, tiene detalle de tipo, mensaje , ruta y fecha que permite ver mejor en caso de bug.(Catch seguro: nunca expone stack ni objeto completo, solo tipo y mensaje controlado.)
 }
 
-Los middlewares (isAuth, isAdmin) controlan acceso según rol o autenticación.
-Arrays actualizados con operadores MongoDB ($set, $addToSet, $pull).
+*Los middlewares (isAuth, isAdmin) controlan acceso según rol o autenticación.*
+
+*Arrays actualizados con operadores MongoDB ($set, $addToSet, $pull).*
